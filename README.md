@@ -1,180 +1,183 @@
-# WarmDock: a todo app that will not negotiate with you
+# WarmDock — A todo app where promises can't be undone.
 
 [![Live](https://img.shields.io/badge/live-warmdock.guagualab.com-d9a441)](https://warmdock.guagualab.com/)
 [![CI](https://github.com/MichaelLu0220/warmdock-build-journey/actions/workflows/ci.yml/badge.svg)](https://github.com/MichaelLu0220/warmdock-build-journey/actions/workflows/ci.yml)
 [![Node 20+](https://img.shields.io/badge/node-20%2B-5b7f3a)](https://nodejs.org/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-6b4a2f.svg)](LICENSE)
 
-Most todo apps are excellent places to move the same task into tomorrow.
+Most todo apps help you organize work. **WarmDock helps you keep promises.**
 
-WarmDock is built around a less comfortable idea: **after a task becomes a
-promise, it cannot be edited or deleted. It can only be finished.**
+Once you commit to a task, it can't be edited, deleted, or quietly pushed into
+tomorrow. It can only be finished.
 
-That is the whole product in one sentence. The rest is what happened when I
-tried to make that sentence kind enough to use every day.
+That single rule changes everything.
 
 **[Visit WarmDock](https://warmdock.guagualab.com/)** ·
 **[Try the no-sign-up demo](https://warmdock.guagualab.com/demo)**
 
 ![WarmDock landing page](assets/warmdock-home.png)
 
-## First: what did I actually open?
+> This is the **public build journal** for WarmDock — the product thinking,
+> architecture, and decisions, plus a runnable interaction demo. It does not
+> contain the production application source. See the
+> [repository boundary](#repository-boundary) for exactly what is and isn't here.
 
-This is the **building diary and public playground**, not a mirror of the
-production repository.
+## Features
 
-| You will find | You will not find |
+- **Promise-based tasks** — a committed task can only be finished, never edited or deleted.
+- **AI-assisted difficulty** — a small service reads each task and proposes a 1–5 weight.
+- **Weekly gift review** — every seventh day arrives as a gift box, not a dashboard.
+- **Shareable progress** — publish a week or a profile card as a revocable link.
+- **Progressive unlocks** — spend earned points on an ability tree, not a settings menu.
+- **Cross-platform** — one backend behind web, desktop, and mobile.
+
+## Tech stack
+
+| Layer | Built with |
 | --- | --- |
-| Product rules and the thinking behind them | Production application source |
-| A high-level system map | Database schema or migrations |
-| Mistakes, reversals, and lessons | Credentials, environment values, or deployment config |
-| Product screenshots | Private prompts, datasets, logs, or user data |
-| Small, runnable UI utilities | Internal APIs or business-rule implementations |
+| Web | Next.js · React |
+| Desktop | Tauri |
+| Mobile | Expo · React Native |
+| Backend | Supabase — Postgres, row-level security, stored procedures |
+| AI service | FastAPI (WarmAI) |
 
-The little source package in this repo is the museum gift shop, not the engine
-room. It contains page-turn gesture math, the mid-drag card-turn preview,
-pixel-style stepped motion, and a sample “warm, never nagging” copy system.
+## What makes WarmDock different?
 
-## The loop
-
-```text
-choose a few promises
-        ↓
-let WarmAI suggest their weight
-        ↓
-finish what matters
-        ↓
-close the day and let it go
-```
-
-WarmDock deliberately does not become a project manager:
+It refuses to become a project manager:
 
 - no backlog archaeology;
-- no Sunday afternoon tag gardening;
-- no dragging “call the dentist” into a sixth consecutive tomorrow;
-- no red badge shouting that you are now 47 tasks behind.
+- no Sunday-afternoon tag gardening;
+- no dragging "call the dentist" into a sixth consecutive tomorrow;
+- no red badge shouting that you are 47 tasks behind.
 
-You begin with a small number of task slots. Finishing promises earns points;
+You start with a small number of task slots. Finishing promises earns points;
 points unlock more room, focus tools, a personal reset rhythm, and weekly
-review. Progress does not make the number bigger just for decoration—it changes
-the shape of the app.
+review. Progress doesn't inflate a number for decoration — it changes the shape
+of the app.
 
-## A week arrives as a gift, not a dashboard
+And the week arrives as a gift, not a dashboard:
 
-A correct bar chart can still be a terrible feature.
+> The first weekly review was technically correct. Nobody cared. So I threw it away.
+>
+> The replacement became a small gift box. Open it. Unwrap your week. Keep it
+> private, or share only what you choose.
 
-The first weekly review was technically fine and emotionally invisible. The
-version that stayed became a small gift box: open it to unwrap the week, keep it
-private, or publish a revocable link with only the task titles you choose.
+## Interaction loop
 
-That change taught me a useful rule:
-
-> Data becomes a product feature when it arrives at the right moment.
+```mermaid
+flowchart TD
+    A[Choose a few promises] --> B[Let WarmAI weigh them]
+    B --> C[Finish what matters]
+    C --> D[Close the day and let it go]
+    D --> A
+```
 
 ## Screenshots
+
+Built with the same warm, pixel-art design language across web, desktop, and
+mobile.
 
 | Landing page | Live demo |
 | --- | --- |
 | ![WarmDock landing page](assets/warmdock-home.png) | ![WarmDock guided demo](assets/warmdock-demo.png) |
-| The idea before the interface | The real interaction loop, backed by temporary in-memory data |
+| The idea before the interface | The real loop, backed by temporary in-memory data |
 
 | Weekly review | Personal card |
 | --- | --- |
 | ![WarmDock weekly review](assets/warmdock-week-review.png) | ![WarmDock personal card](assets/warmdock-personal-card.png) |
-| Seven days, wrapped | A small public-facing snapshot of progress |
+| Seven days, wrapped | A public-safe snapshot of progress |
 
-## The safe-to-open playground
+## Playground
 
-Requires Node.js 20 or newer and has no runtime dependencies.
+`npm run demo` opens an interactive, warm pixel **book of cards you drag to
+turn** — the WarmDock interaction rebuilt from small, dependency-free
+utilities. No backend, no product source.
 
 ```bash
 git clone https://github.com/MichaelLu0220/warmdock-build-journey.git
 cd warmdock-build-journey
 
-npm test          # run the utility tests
-npm run demo      # open an interactive card flip in your browser
-npm run demo:print  # or just print the utility outputs, no browser
+npm test            # run the utility tests
+npm run demo        # interactive browser demo
+npm run demo:print  # or just print the utility outputs
 ```
 
-`npm run demo` starts a tiny standard-library web server (nothing to install)
-and opens a **warm pixel book of cards you can drag to turn**. Every flip is
-driven by the published utilities: `classifyPageTurn` decides the turn,
-`dragPreview` tilts the card as you pull, `steppedFrames` plays the stepped
-animation, and `turnBook` clamps at the covers. It is the interaction, rebuilt
-from the same small pieces — not the product, and it talks to no backend.
+Requires Node.js 20 or newer. Nothing to install.
 
-```js
-import { classifyPageTurn, dragPreview, steppedFrames } from "./src/index.js";
+### Public utilities
 
-classifyPageTurn({ deltaX: -92, deltaY: 18, pointer: "touch" });
-// "next"
+| Function | What it decides |
+| --- | --- |
+| `classifyPageTurn` | whether a drag is a page turn, and which way |
+| `dragPreview` | how far the card tilts mid-drag, and when release commits |
+| `steppedFrames` | the pixel-stepped animation frames |
+| `turnBook` | the current card, clamped at the covers |
+| `closingLine` | a calm end-of-day line — tone expressed as data |
 
-// The same 40px drag turns the page under a thumb and does nothing under a
-// mouse — the touch threshold is deliberately the smaller one.
-classifyPageTurn({ deltaX: -40, deltaY: 6, pointer: "touch" }); // "next"
-classifyPageTurn({ deltaX: -40, deltaY: 6, pointer: "mouse" }); // null
+These were recreated for this repository. They demonstrate interaction ideas
+without exposing production components or business rules.
 
-// Mid-drag feedback: rotate the card a little, and know when release commits.
-dragPreview({ delta: -40, threshold: 32 });
-// { progress: 1, degrees: -7, willTurn: true }
+## Architecture
 
-steppedFrames({ from: 0, to: 1, steps: 4 });
-// [0, 0.25, 0.5, 0.75, 1]
-```
-
-These utilities were recreated for this public repository. They demonstrate
-interaction ideas without exposing production components or business logic.
-
-## What took the longest
-
-Not the first version. The expensive part was discovering where the product
-metaphor stopped working:
-
-1. A desktop dock made sense; a browser overlay did not. The web version became
-   a normal web page.
-2. A 24-pixel page-turn edge worked with a mouse and felt hostile under a thumb.
-3. “Debounced AI” still made too many calls for a slow typist. The useful event
-   was finishing the edit, not pausing between letters.
-4. A weekly chart contained the right information and created no desire to
-   return. Timing and presentation mattered more than another metric.
-5. Sharing productivity data sounds harmless until a task title says “call the
-   oncologist.” Privacy needed to be part of the interaction, not a footnote.
-
-The longer version lives in [the build journey](docs/build-journey.md).
-
-## The deliberately boring system map
+Every client shares the same product rules. Only data storage changes.
 
 ```mermaid
 flowchart LR
-    P["One person"] --> C["Web · desktop · mobile clients"]
+    P["One person"] --> C["Web · desktop · mobile"]
     C --> A["Shared application rules"]
     A --> B["Authoritative backend"]
-    A --> W["WarmAI task suggestion service"]
+    A --> W["WarmAI suggestion service"]
     B --> S["Private account data"]
     B --> H["Optional, revocable public snapshots"]
 ```
 
-The public architecture note stays at the level of boundaries and trade-offs.
-Names of private services, schemas, routes, and operational controls stay in the
-private repository.
+The backend is authoritative: every state change goes through a stored
+procedure, and the client cannot award itself points or edit a finished task —
+because the product *is* its constraints. The full note, at the level of
+boundaries and trade-offs, is in
+[docs/architecture.md](docs/architecture.md).
+
+## Five things I changed my mind about
+
+The first version was cheap. The expensive part was learning where the product
+metaphor stopped working:
+
+1. A desktop dock made sense; a browser overlay did not. The web version became a normal web page.
+2. A 24-pixel page-turn edge felt precise with a mouse and hostile under a thumb.
+3. "Debounced AI" still made too many calls for a slow typist — the useful event was *finishing* the edit, not pausing between letters.
+4. A weekly chart had the right numbers and created no desire to return. Timing and presentation mattered more than another metric.
+5. Sharing productivity data sounds harmless until a task title says "call the oncologist." Privacy had to be part of the interaction, not a footnote.
+
+The longer story is in [docs/build-journey.md](docs/build-journey.md) and
+[docs/decisions.md](docs/decisions.md).
 
 ## Read the notebook
 
-- [Product concept](docs/product-concept.md)
-- [Build journey](docs/build-journey.md)
-- [Architecture without the secret floor plan](docs/architecture.md)
-- [Decisions and reversals](docs/decisions.md)
-- [Public-release boundary](SECURITY.md)
+- [Product concept](docs/product-concept.md) — the rule, the daily cycle, the ability tree
+- [Architecture](docs/architecture.md) — one backend, three clients, and the seams that keep them honest
+- [Build journey](docs/build-journey.md) — the order things were actually built in
+- [Decisions](docs/decisions.md) — the hard calls, including the ones I got wrong first
 
-## Related
+## Repository boundary
 
-[warmai-build-journey](https://github.com/MichaelLu0220/warmai-build-journey)
-documents the small task-understanding service behind WarmDock and includes a
-separate public toolkit.
+| ✅ Public | ❌ Private |
+| --- | --- |
+| Product decisions and reasoning | Production application source |
+| A high-level system map | Database schema, migrations, policies |
+| Screenshots of public surfaces | Credentials, environment values, deploy config |
+| Runnable interaction demo + utilities | Model prompts, datasets, provider adapters |
+| Tests for those utilities | Logs, backups, and user data |
+
+Full detail — and how to report anything private that slips through — is in
+[SECURITY.md](SECURITY.md).
+
+## Ecosystem
+
+- **[WarmDock](https://warmdock.guagualab.com/)** — the daily-promise app (this write-up).
+- **[WarmAI](https://github.com/MichaelLu0220/warmai-build-journey)** — the task-understanding service behind it, with its own public toolkit.
 
 ## License
 
-The writing, examples, and public playground in this repository are available
-under the [MIT License](LICENSE). The private WarmDock application is not
-included or licensed by this repository.
-
+The writing, examples, and playground in this repository are available under the
+[MIT License](LICENSE). The private WarmDock application is not included or
+licensed by this repository.
