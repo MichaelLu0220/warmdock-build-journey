@@ -1,71 +1,71 @@
-# Product concept
+# Product concept: a small list with teeth
 
-## The rule
+## The opposite of backlog management
 
-Most todo apps reward you for adding. Add a task, feel productive. Move it to tomorrow, feel productive again. The list grows, the guilt grows with it, and eventually you declare bankruptcy and start a new list.
+Most todo apps are built to help a list survive.
 
-WarmDock takes the opposite position: **a task, once created, cannot be edited or deleted — only finished.**
+WarmDock is built to help a **day end**.
 
-That single rule does most of the design work:
+The central rule is intentionally sharp:
 
-- **It makes creating a task cost something.** If you cannot quietly rewrite it later, you think about the wording now.
-- **It removes the busywork that feels like work.** There is no reordering, no re-tagging, no grooming. There is nothing to do with a task except do it.
-- **It makes the day honest.** At the end of the day the list says what actually happened.
+> Once a task becomes a promise, it cannot be edited or deleted. It can only be
+> finished.
 
-There is one escape hatch, and it is deliberately narrow: a task that has not yet had its difficulty set is still a *draft* and can be discarded. Once you commit to a difficulty, it is a promise.
+That rule makes adding a task slightly expensive. You choose the words with
+care because you cannot quietly rename the promise later. It also removes an
+entire category of pretend work: reordering, tagging, grooming, and repeatedly
+moving tasks to tomorrow.
 
-## The daily cycle
+## Small capacity is a feature
 
-WarmDock is not a list that lives forever. It is a **day** that opens and closes.
+WarmDock starts with only a few task slots. This is not because three is a
+scientifically perfect number. It is because a full small list forces a real
+choice.
 
-- The first task you create locks the day's timezone and its reset time.
-- Tasks belong to that day. They do not roll over.
-- At the reset time the day settles: totals are computed, points move into your wallet, the streak advances or breaks.
-- The next day starts empty.
+Finishing promises earns points. Points can unlock more capacity and other
+abilities over time. The progression system therefore changes what the tool can
+do instead of only making a number larger.
 
-The closing is a small ceremony rather than a silent rollover. If everything got done, the app says so and gets out of the way. If it didn't, it says that too — without red badges or a nagging counter. The tone throughout is *warm and unhurried*: no exclamation marks, no streak-loss panic, no "you're falling behind".
+## Difficulty without a questionnaire
 
-## Scarcity as the progression system
+A small companion service, WarmAI, can suggest a difficulty and tidy obvious
+wording problems. The suggestion is optional. If the service is unavailable,
+the person can choose manually and continue.
 
-You start with **three task slots**. Not because three is optimal, but because a small number forces a choice, and choosing is the point.
+The useful design principles are broader than AI:
 
-Completing tasks earns points. Points are spent on an **ability tree**:
+1. an enhancement must not block the basic action;
+2. “still thinking” must look different from “I know the answer”;
+3. a fallback must not pretend to be a recommendation;
+4. intermediate typing is rarely worth analysing.
 
-- **Capacity** — a fourth, fifth, sixth, seventh slot
-- **Focus** — mark one task as the day's focus for a small bonus
-- **Rhythm** — set your own daily reset time instead of midnight
-- **Analysis** — weekly review
+## The day closes
 
-This inverts the usual settings page. Features are not toggles you find in a menu; they are things the app hands you after you have shown you use it. A new user cannot misconfigure WarmDock, because there is almost nothing to configure yet.
+Tasks do not live forever. At the chosen reset time, the day settles and the
+next one begins empty.
 
-## Difficulty, and why a machine guesses it
+The tone matters here. WarmDock does not use streak-loss panic, red guilt
+badges, or a synthetic coach shouting encouragement. Completion can feel good
+without becoming a casino, and an unfinished day can end without becoming a
+trial.
 
-Points come from difficulty, so difficulty has to be set — and asking a user to rate their own task from 1 to 5 every time is friction that adds nothing.
+## Weekly review
 
-So a small language service (WarmAI) reads the task title and proposes a score, plus a corrected wording when the original has typos. The user can accept or override it.
+After weekly review is unlocked, seven days of activity can arrive as a gift
+box. It is a small ceremony rather than another permanent dashboard.
 
-Three rules keep this from becoming annoying:
+The review can stay private or become a revocable public link. Because task
+titles may contain deeply personal details, the person sharing can choose which
+titles appear. The summary can still describe the whole week while being clear
+that some text was kept private.
 
-1. **It never blocks.** If the service is slow or down, the app says so plainly and lets the user pick a difficulty by hand. Task creation is never gated on a model responding.
-2. **It never invents confidence.** While the answer is still in flight the score shows an ellipsis, not a placeholder number. A number on screen means a real answer arrived.
-3. **It is not chatty.** One request when the modal opens, one when the user finishes editing. No requests while typing.
+## What WarmDock refuses to become
 
-## The weekly review
+- a project manager;
+- a calendar;
+- a team workspace;
+- a habit-tracking scoreboard;
+- an infinite place to store future guilt.
 
-Seven days after unlocking weekly analysis — and every seven days after — a gift box appears in the corner of the app. Opening it unwraps that week: what got finished each day, the strongest day, the days closed out clean.
+It is one person, one day, and a few promises.
 
-Closing the review tucks it into the account page, where it stays.
-
-A week can be **shared as a public link**. Because task titles are the least-guarded thing people write ("call the oncologist", "email the lawyer"), sharing offers two paths:
-
-- **Share everything** — the whole week, titles included.
-- **Choose what to show** — tick the tasks that go public; the numbers still count all of them, and the page says plainly that some were held back.
-
-Shared links are unguessable, excluded from search engines, and can be turned off at any time.
-
-## What WarmDock is not
-
-- Not a project manager. No sub-tasks, no dependencies, no assignees.
-- Not a calendar. Tasks have a day, not a time.
-- Not a habit tracker. The streak counts days you finished what you promised, not days you opened the app.
-- Not a team tool. One person, one day, one small list.

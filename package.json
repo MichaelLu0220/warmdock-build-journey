@@ -1,0 +1,16 @@
+{
+  "name": "warmdock-build-journey",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Public build notes and a non-production WarmDock interaction playground",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "node --test",
+    "demo": "node examples/playground.mjs"
+  },
+  "license": "MIT"
+}
+

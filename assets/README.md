@@ -1,12 +1,15 @@
-# Screenshots
+# Public screenshots
 
-Captured from the live site at https://warmdock.guagualab.com/ .
+These images were captured from public WarmDock surfaces and contain no account
+credentials or real user data.
 
-| File | Where | What to capture |
-| --- | --- | --- |
-| `warmdock-home.png` | `/` | The hero section, showing the headline and the panel mock |
-| `warmdock-demo.png` | `/demo` | The demo with the guided-tour bubble visible |
-| `warmdock-week-review.png` | `/app` | The week review opened from the gift box |
-| `warmdock-shared-week.png` | `/w/<token>` | A shared week's public page |
+| File | Surface |
+| --- | --- |
+| `warmdock-home.png` | Public landing page |
+| `warmdock-demo.png` | No-sign-up guided demo |
+| `warmdock-week-review.png` | Weekly review presentation |
+| `warmdock-personal-card.png` | Public-safe personal card presentation |
 
-Desktop width around 1280px keeps the layout close to how the README table lays them out.
+The production repository, private screens, and real account content are not
+part of this gallery.
+

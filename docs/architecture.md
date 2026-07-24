@@ -1,81 +1,79 @@
-# Architecture
+# Architecture without the secret floor plan
 
-WarmDock runs on web, desktop, and mobile against one backend. The shape that makes that survivable is boring on purpose.
+This page describes boundaries and trade-offs. It intentionally does not name
+private routes, tables, procedures, providers, infrastructure, or environment
+configuration.
 
-## Layered by dependency direction
+## One product, several surfaces
 
+WarmDock runs as a web app, a desktop dock, and an early mobile client. They
+share the product model and talk to one authoritative backend, while each
+platform is allowed to behave like itself.
+
+```mermaid
+flowchart TB
+    D["Shared product concepts"]
+    D --> W["Web interface"]
+    D --> T["Desktop dock"]
+    D --> M["Mobile interface"]
+    W --> B["Backend boundary"]
+    T --> B
+    M --> B
+    B --> P["Private account state"]
+    B --> X["Optional public snapshots"]
+    W --> A["WarmAI suggestion boundary"]
+    T --> A
+    M --> A
 ```
-core      Domain types, pure rules, i18n. No I/O, no platform.
-api       Backend client + adapters. Declares gateway PORTS (interfaces).
-app       Framework-agnostic app layer: stores, orchestrators, injection points.
-ui-web    DOM components. Shared by web + desktop only.
----
-web       Next.js
-desktop   Tauri (thin native bridge: encrypted cache, notifications, offline read)
-mobile    Expo / React Native — its own native UI, reuses core + api + app
-```
 
-Apps depend on shared packages; shared packages never depend on apps. Logic lives as far down toward `core` as it can. When a rule needs to change, there is one place to change it, and the compiler finds the callers.
+## Dependency direction
 
-The rule that keeps this honest: **if you are about to import an app from a package, the logic is in the wrong layer.**
+The reusable product concepts do not import a platform. Interfaces can depend
+on shared ideas; shared ideas do not depend on Next.js, Tauri, Expo, a browser,
+or a database client.
 
-## Ports and gateways
+That direction buys three practical things:
 
-The `api` package declares interfaces — `TaskGateway`, `SessionGateway`, `UnlockGateway`, `AuthGateway`, `AnalysisGateway`, and so on. Backend adapters implement them. The app layer depends only on the interfaces.
+- another platform can reuse behavior without copying a screen;
+- tests can exercise decisions without starting the whole product;
+- the public demo can replace account-backed services with temporary memory.
 
-Each host wires its concrete implementations once at startup. Nothing below the app layer reaches for a global client.
+## The backend owns consequences
 
-This dependency inversion pays for itself in two places:
+Clients may predict what an action will look like, but the backend decides what
+actually happened. This matters for points, unlocks, daily settlement, and any
+rule whose violation would change the meaning of the product.
 
-- **The demo.** `/demo` runs the entire product against in-memory fake gateways. Same components, same stores, same flows — no account, nothing persisted. It is not a mock-up; it is the app with a different backend.
-- **Testing.** Orchestrators are testable without a network.
+This document stops there on purpose. Enforcement mechanisms, data structures,
+authorization controls, and operational procedures belong to the private
+system.
 
-## The backend is authoritative
+## AI is optional, server-mediated assistance
 
-Every state change goes through a `SECURITY DEFINER` stored procedure. Row-level security guards direct reads. The client cannot write points, cannot grant itself an unlock, cannot settle its own day.
+WarmAI suggests wording and weight; it does not own task creation. The basic
+flow survives when the suggestion service is slow or unavailable.
 
-This matters more than usual here, because the product's value *is* its constraints. An app where the client can edit a completed task is not WarmDock with a bug; it is a different product.
+Private credentials do not belong in a client application. The public
+repository documents the boundary without publishing the production adapter or
+configuration.
 
-Clients get a snapshot on startup and foreground, then stay in sync over realtime subscriptions. Polling was removed early.
+## Public sharing uses a smaller data shape
 
-### Rules exist in exactly two places, and they must agree
+A share page is not a public view of a private account. It is a deliberately
+smaller representation with an independent lifecycle:
 
-- The **authoritative** version, in SQL.
-- A **pure mirror** in `core/rules/`, used only for optimistic UI prediction.
+- created only by an explicit action;
+- contains only allowed fields;
+- can omit sensitive titles;
+- can be revoked;
+- avoids implying that hidden information does not exist.
 
-Changing a rule means a new migration, a matching database test, and updating the mirror. The mirror is never allowed to be the source of truth — if the two disagree, the database wins and the UI corrects itself on the next snapshot.
+## Aesthetic constraints are still architecture
 
-### Migrations are append-only
+WarmDock uses warm paper colours, hard pixel shadows, and stepped movement.
+Those choices affect text length, gesture handling, motion helpers, and
+accessibility—not just CSS.
 
-Numbered, ordered, and never edited once applied to production. A rule change is a new file, not a rewrite of an old one. The one exception is a migration that has not left the developer's machine yet — before it ships, rewriting it beats shipping a patch that exists only to fix something nobody ever ran.
+The public `src/` package explores three of these non-core edges. It contains no
+authentication, storage, scoring, unlock, or task-enforcement code.
 
-### Database tests
-
-The schema has its own test suite — around 130 assertions across ten files, run against a real database. They cover the state machine (including a fuzz over valid and invalid transitions), row-level isolation between users, settlement arithmetic, and every authoritative procedure's refusal cases.
-
-These are the tests that matter most, because they test the layer that cannot be corrected by a client update.
-
-## The AI call is a server-side proxy
-
-The browser never sees the language-service key. It calls a same-origin route; the server verifies the caller is a signed-in user, injects the real key, and forwards the request.
-
-The proxy also:
-
-- caps the request body and validates its shape before forwarding
-- refuses to start at all in production if the key is missing, rather than falling back to a development default
-- returns a plain unavailable-status when the upstream cannot be reached, so the client can degrade instead of hanging
-
-## Sharing: snapshots and live reads
-
-Two things can be shared publicly, and they made opposite calls for the same reason — *what does the reader expect to see?*
-
-- **A week in review** is a **frozen snapshot**. It describes one specific week; it should not change after you share it. The public read is a token lookup returning stored JSON — no derivation happens under an unauthenticated identity, so the attack surface is one indexed select.
-- **A profile card** is a **live read**. Streak and points keep moving; a frozen card gets stale and wrong.
-
-Both use unguessable random tokens, expose only whitelisted fields, are excluded from search indexing, and can be revoked. Revocation takes effect immediately — the public pages deliberately do not cache.
-
-## Aesthetic as a constraint
-
-The interface is a warm brown pixel-art world: hard shadows, no gradients, stepped animations rather than smooth interpolation, and a book of cards you turn rather than tabs you click.
-
-This is a constraint, not decoration. A pixel typeface is wide and unforgiving, which caps how much text can fit anywhere — and that pressure keeps the copy short. More than once the fix for a layout bug was to delete a word rather than shrink a font.
