@@ -1,6 +1,7 @@
 # WarmDock: a todo app that will not negotiate with you
 
 [![Live](https://img.shields.io/badge/live-warmdock.guagualab.com-d9a441)](https://warmdock.guagualab.com/)
+[![CI](https://github.com/MichaelLu0220/warmdock-build-journey/actions/workflows/ci.yml/badge.svg)](https://github.com/MichaelLu0220/warmdock-build-journey/actions/workflows/ci.yml)
 [![Node 20+](https://img.shields.io/badge/node-20%2B-5b7f3a)](https://nodejs.org/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-6b4a2f.svg)](LICENSE)
 
@@ -31,8 +32,8 @@ production repository.
 | Small, runnable UI utilities | Internal APIs or business-rule implementations |
 
 The little source package in this repo is the museum gift shop, not the engine
-room. It contains page-turn gesture math, pixel-style stepped motion, and a
-sample “warm, never nagging” copy system.
+room. It contains page-turn gesture math, the mid-drag card-turn preview,
+pixel-style stepped motion, and a sample “warm, never nagging” copy system.
 
 ## The loop
 
@@ -95,14 +96,19 @@ npm run demo
 ```
 
 ```js
-import { classifyPageTurn, steppedFrames } from "./src/index.js";
+import { classifyPageTurn, dragPreview, steppedFrames } from "./src/index.js";
 
-classifyPageTurn({
-  deltaX: -92,
-  deltaY: 18,
-  pointer: "touch",
-});
+classifyPageTurn({ deltaX: -92, deltaY: 18, pointer: "touch" });
 // "next"
+
+// The same 40px drag turns the page under a thumb and does nothing under a
+// mouse — the touch threshold is deliberately the smaller one.
+classifyPageTurn({ deltaX: -40, deltaY: 6, pointer: "touch" }); // "next"
+classifyPageTurn({ deltaX: -40, deltaY: 6, pointer: "mouse" }); // null
+
+// Mid-drag feedback: rotate the card a little, and know when release commits.
+dragPreview({ delta: -40, threshold: 32 });
+// { progress: 1, degrees: -7, willTurn: true }
 
 steppedFrames({ from: 0, to: 1, steps: 4 });
 // [0, 0.25, 0.5, 0.75, 1]

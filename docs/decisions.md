@@ -55,12 +55,22 @@ more stable interface for both fast and slow typists.
 
 ## Touch gets a different gesture contract
 
-A narrow edge is precise with a mouse and miserable with a thumb. The product
-therefore treats pointer types differently: touch needs a larger deliberate
-movement, while mouse interaction can preserve smaller target zones and text
-selection.
+A narrow edge is precise with a mouse and miserable with a thumb. So the two
+pointer types get opposite trades:
 
-The small public gesture utility demonstrates the principle without containing
+- **Touch** starts a turn from the whole card and commits with a *shorter* drag.
+  The thin edge was the problem — a bigger start target and a lower threshold
+  make the page turn instead of fighting the browser's own back gesture.
+- **Mouse** keeps the narrow edge and a *longer* drag, because an ordinary drag
+  across the middle of a page is almost always a text selection, not a turn.
+
+The counter-intuitive part is that the *touch* threshold ends up smaller, not
+larger. "Make it easier for the thumb" turned out to mean less required travel,
+not more.
+
+The small public gesture utility carries this trade in its defaults, and a
+companion `dragPreview` utility shows the mid-drag feedback — the card rotates a
+little as you pull and signals when releasing will commit — without containing
 the production component.
 
 ## The browser extension was deleted
