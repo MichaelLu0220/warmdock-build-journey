@@ -57,10 +57,8 @@ of the app.
 
 And the week arrives as a gift, not a dashboard:
 
-> The first weekly review was technically correct. Nobody cared. So I threw it away.
->
-> The replacement became a small gift box. Open it. Unwrap your week. Keep it
-> private, or share only what you choose.
+> A week deserves more than a chart.
+> Open a small gift box. Unwrap your week. Keep it private, or share only what you choose.
 
 ## Interaction loop
 
