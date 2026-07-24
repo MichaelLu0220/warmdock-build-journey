@@ -9,6 +9,7 @@ application.
 - synthetic examples;
 - screenshots of public product surfaces;
 - standalone utilities recreated for this repository;
+- a local browser demo built only from those utilities and synthetic content;
 - tests for those utilities.
 
 ## Excluded

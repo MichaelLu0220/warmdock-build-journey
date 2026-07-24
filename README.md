@@ -91,9 +91,17 @@ Requires Node.js 20 or newer and has no runtime dependencies.
 git clone https://github.com/MichaelLu0220/warmdock-build-journey.git
 cd warmdock-build-journey
 
-npm test
-npm run demo
+npm test          # run the utility tests
+npm run demo      # open an interactive card flip in your browser
+npm run demo:print  # or just print the utility outputs, no browser
 ```
+
+`npm run demo` starts a tiny standard-library web server (nothing to install)
+and opens a **warm pixel book of cards you can drag to turn**. Every flip is
+driven by the published utilities: `classifyPageTurn` decides the turn,
+`dragPreview` tilts the card as you pull, `steppedFrames` plays the stepped
+animation, and `turnBook` clamps at the covers. It is the interaction, rebuilt
+from the same small pieces — not the product, and it talks to no backend.
 
 ```js
 import { classifyPageTurn, dragPreview, steppedFrames } from "./src/index.js";

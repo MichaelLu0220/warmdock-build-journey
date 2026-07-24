@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>WarmDock — flip the concept</title>
+    <style>
+      :root {
+        --paper-deep: #e9dcc0;
+        --paper: #f4ecd8;
+        --cream: #fff8e7;
+        --border: #6b4a2b;
+        --border-soft: #a68963;
+        --ink: #3a2a1a;
+        --ink-soft: #7a6850;
+        --dim: #b8a88c;
+        --gold: #d9a441;
+        --gold-soft: #e8c479;
+        --glow: #ffe9b0;
+        --green: #6b8a3a;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+        padding: 28px 16px 40px;
+        font-family: "Courier New", ui-monospace, monospace;
+        color: var(--ink);
+        background: var(--paper);
+        background-image: radial-gradient(
+            circle at 1px 1px,
+            rgba(107, 74, 43, 0.06) 1px,
+            transparent 0
+          );
+        background-size: 4px 4px;
+        -webkit-user-select: none;
+        user-select: none;
+      }
+      .masthead {
+        text-align: center;
+      }
+      .masthead h1 {
+        margin: 0;
+        font-size: 0.9rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--ink-soft);
+      }
+      .masthead p {
+        margin: 6px 0 0;
+        font-size: 0.85rem;
+        color: var(--ink-soft);
+      }
+      .stage {
+        perspective: 900px;
+        touch-action: pan-y;
+      }
+      .card {
+        position: relative;
+        width: min(340px, 88vw);
+        height: 300px;
+        padding: 20px 22px;
+        background: var(--cream);
+        border: 3px solid var(--border);
+        box-shadow: 6px 6px 0 var(--border);
+        cursor: grab;
+        transform-origin: 50% 50%;
+        display: flex;
+        flex-direction: column;
+      }
+      .card[data-armed="true"] {
+        box-shadow: 6px 6px 0 var(--border), 0 0 0 4px var(--glow);
+      }
+      .card:active {
+        cursor: grabbing;
+      }
+      .card__eyebrow {
+        font-size: 0.62rem;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--ink-soft);
+      }
+      .card__title {
+        margin: 6px 0 14px;
+        font-size: 1.25rem;
+        font-weight: 700;
+      }
+      .card__body {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        font-size: 0.95rem;
+        line-height: 1.5;
+      }
+      .row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .box {
+        display: inline-grid;
+        place-items: center;
+        width: 20px;
+        height: 20px;
+        border: 2px solid var(--border);
+        background: var(--paper);
+        font-size: 0.8rem;
+      }
+      .row.done .box {
+        background: var(--gold);
+      }
+      .row.done span {
+        color: var(--ink-soft);
+        text-decoration: line-through;
+      }
+      .bars {
+        display: flex;
+        align-items: flex-end;
+        gap: 6px;
+        height: 84px;
+        margin-top: 4px;
+      }
+      .bars i {
+        flex: 1;
+        background: var(--gold-soft);
+        border: 2px solid var(--border);
+        border-bottom: none;
+      }
+      .bars i[data-full="true"] {
+        background: var(--gold);
+      }
+      .pill {
+        align-self: flex-start;
+        padding: 3px 9px;
+        font-size: 0.72rem;
+        background: var(--glow);
+        border: 2px solid var(--border);
+      }
+      .card__foot {
+        font-size: 0.72rem;
+        color: var(--ink-soft);
+      }
+      .controls {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+      .controls button {
+        font: inherit;
+        font-size: 1rem;
+        width: 40px;
+        height: 40px;
+        color: var(--ink);
+        background: var(--cream);
+        border: 2px solid var(--border);
+        box-shadow: 2px 2px 0 var(--border);
+        cursor: pointer;
+      }
+      .controls button:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+        box-shadow: none;
+      }
+      .dots {
+        display: flex;
+        gap: 10px;
+      }
+      .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--border-soft);
+      }
+      .dot.is-active {
+        background: var(--border);
+      }
+      .hint {
+        font-size: 0.78rem;
+        color: var(--ink-soft);
+        text-align: center;
+        max-width: 340px;
+      }
+      code {
+        background: var(--paper-deep);
+        padding: 1px 5px;
+        border: 1px solid var(--border-soft);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="masthead">
+      <h1>WarmDock — the concept, one card at a time</h1>
+      <p>Drag the card sideways to turn it. Or use the arrows.</p>
+    </div>
+
+    <div class="stage">
+      <div class="card" id="card" aria-live="polite"></div>
+    </div>
+
+    <div class="controls">
+      <button id="prev" aria-label="Previous card">‹</button>
+      <div class="dots" id="dots"></div>
+      <button id="next" aria-label="Next card">›</button>
+    </div>
+
+    <p class="hint">
+      Every flip runs the published utilities:
+      <code>classifyPageTurn</code> decides the turn,
+      <code>dragPreview</code> tilts the card as you pull, and
+      <code>steppedFrames</code> plays the pixel-stepped animation. Nothing here
+      talks to a server — it is the interaction, not the product.
+    </p>
+
+    <script type="module" src="./main.js"></script>
+  </body>
+</html>

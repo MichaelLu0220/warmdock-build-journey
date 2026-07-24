@@ -18,4 +18,6 @@ jobs:
           node-version: ${{ matrix.node }}
       # The playground has no dependencies, so there is nothing to install.
       - run: npm test
-      - run: npm run demo
+      # demo:print exits; `npm run demo` starts a long-running server, so it is
+      # not part of CI.
+      - run: npm run demo:print
